@@ -16,13 +16,32 @@ enum Category {
     Angular,
 }
 
+// alias or type
+/*
 type Book = {
     id: number;
     title: string;
     author: string;
     available: boolean;
     category: Category;
-};
+}; */
+
+// interface
+interface Book {
+    id: number;
+    title: string;
+    author: string;
+    available: boolean;
+    category: Category;
+    pages?: number;
+    // markDamaged?: (reason: string) => void; // 1-й способ задать метод
+    /* markDamaged?(reason: string): void;*/ // 2-й способ задать метод
+    markDamaged?: DamageLogger; // 3-й способ задать метод (через интерфейс функционального типа), можно сделать и через алиас (type)
+}
+
+interface DamageLogger {
+    (reason: string): void;
+}
 
 function getAllBooks(): readonly Book[] {
     const books = <const>[
@@ -150,7 +169,14 @@ createCustomer('Marrine', 45, 'London'); */
 
 // logFirstAvailable();
 
-function getBookByID(id: number): Book {
+/* function getBookByID(id: number): Book {
+    const books = getAllBooks();
+    return books.find(book => book.id === id);
+} */
+
+// более универсальное, чем в верхнем варианте задание типа параметра чеерез интерфейс
+
+function getBookByID(id: Book['id']): Book | undefined {
     const books = getAllBooks();
     return books.find(book => book.id === id);
 }
@@ -215,3 +241,89 @@ function bookTitleTransform(title: any): string {
 
 /* console.log(bookTitleTransform('Learn Typescript'));
 console.log(bookTitleTransform(1)); */
+
+// Task 04.01. Defining an Interface
+
+function printBook(book: Book): void {
+    console.log(book.title + ' by ' + book.author);
+}
+
+const myBook: Book = {
+    id: 5,
+    title: 'Colors, Backgrounds, and Gradients',
+    author: 'Eric A. Meyer',
+    available: true,
+    category: Category.CSS,
+    // year: 2015,
+    // copies: 3,
+    pages: 200,
+    // markDamaged: (reason: string) => console.log(`Damaged: ${reason}`),
+    // ниже альтернативный вариант добавления метода
+    markDamaged(reason: string) {
+        console.log(`Damaged: ${reason}`);
+    },
+};
+
+/* myBook.markDamaged('missing back cover');
+
+printBook(myBook); */
+
+// Task 04.02. Defining an Interface for Function Types
+
+const logDamage: DamageLogger = (reason: string) => console.log(`Damaged: ${reason}`);
+
+// Task 04.03. Extending Interface
+
+interface Person {
+    name: string;
+    email: string;
+}
+
+interface Author extends Person {
+    numBooksPublished: number;
+}
+
+interface Librarian extends Person {
+    department: string;
+    assistCustomer: (custName: string, bookTitle: string) => void;
+}
+
+/* const favoriteAuthor: Author = {
+    name: 'Anna',
+    email: 'anna@mail.com',
+    numBooksPublished: 1,
+};
+
+const favoriteLibrarian: Librarian = {
+    name: 'Dan',
+    email: 'dan@mail.com',
+    department: 'IT',
+    assistCustomer: null,
+}; */
+
+// Task 04.04. Optional Chaining
+
+/* const offer: any = {
+    book: {
+        title: 'Essential TypeScript',
+    },
+};
+
+console.log(offer.magazine);
+console.log(offer.magazine?.getTitle());
+console.log(offer.book.getTitle?.());
+console.log(offer.book.authors?.[0]); */
+
+// Task 04.05. Keyof Operator
+
+type BookProperties = keyof Book | 'isbn';
+
+function getProperty(book: Book, prop: BookProperties): any {
+    const value = book[prop];
+
+    return typeof value === 'function' ? value.name : value;
+}
+
+console.log(getProperty(myBook, 'title'));
+console.log(getProperty(myBook, 'markDamaged'));
+console.log(getProperty(myBook, 'isbn'));
