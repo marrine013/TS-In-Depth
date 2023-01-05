@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-redeclare */
 
 showHello('greeting', 'TypeScript');
@@ -176,7 +177,7 @@ createCustomer('Marrine', 45, 'London'); */
 
 // более универсальное, чем в верхнем варианте задание типа параметра чеерез интерфейс
 
-function getBookByID(id: Book['id']): Book | undefined {
+function getBookByID(id: Book['id']): BookOrUndefined {
     const books = getAllBooks();
     return books.find(book => book.id === id);
 }
@@ -324,6 +325,125 @@ function getProperty(book: Book, prop: BookProperties): any {
     return typeof value === 'function' ? value.name : value;
 }
 
-console.log(getProperty(myBook, 'title'));
-console.log(getProperty(myBook, 'markDamaged'));
-console.log(getProperty(myBook, 'isbn'));
+// console.log(getProperty(myBook, 'title'));
+// console.log(getProperty(myBook, 'markDamaged'));
+// console.log(getProperty(myBook, 'isbn'));
+
+// Task 05.01. Creating and Using Classes
+// Task 05.03. Creating Abstract Classes
+
+abstract class ReferenceItem {
+    // title: string;
+    // year: number;
+    // constructor(newTitle: string, newYear: number) {
+    //     console.log('Creating a new ReferenceItem...');
+    //     this.title = newTitle;
+    //     this.year = newYear;
+    // }
+
+    #id: number;
+
+    private _publisher: string;
+
+    get publisher(): string {
+        return this._publisher.toUpperCase();
+    }
+
+    set publisher(newPublisher: string) {
+        this._publisher = newPublisher;
+    }
+
+    static department: string = 'Research Dep.';
+
+    constructor(id: number, public title: string, protected year: number) {
+        console.log('Creating a new ReferenceItem...');
+        this.#id = id;
+    }
+
+    printItem(): void {
+        console.log(`${this.title} was published in ${this.year}`);
+        console.log(ReferenceItem.department);
+        console.log(Object.getPrototypeOf(this).constructor.department);
+    }
+
+    getID(): number {
+        return this.#id;
+    }
+
+    abstract printCitation(): void;
+}
+
+/* const ref = new ReferenceItem(1, 'Learn Typescript', 2022);
+console.log(ref);
+ref.printItem();
+ref.publisher = 'abc group';
+console.log(ref.publisher);
+console.log(ref.getID()); */
+
+// Task 05.02. Extending Classes
+
+class Encyclopedia extends ReferenceItem {
+    constructor(id: number, title: string, year: number, public edition: number) {
+        super(id, title, year);
+    }
+
+    override printItem(): void {
+        super.printItem();
+        console.log(`Edition: ${this.edition} (${this.year})`);
+    }
+
+    printCitation(): void {
+        console.log(`${this.title} – ${this.year}`);
+    }
+}
+
+// const refBook = new Encyclopedia(1, 'Learn Typescript', 2022, 2);
+// refBook.printItem();
+// refBook.printCitation();
+
+// Task 05.04. Interfaces for Class Types
+
+class UniversityLibrarian implements Librarian {
+    name: string;
+    email: string;
+    department: string;
+    assistCustomer (custName: string, bookTitle: string): void {
+        console.log(`${this.name} is assisting ${custName} with the book ${bookTitle}`);
+    };
+}
+
+// const favoriteLibrarian: Librarian = new UniversityLibrarian();
+// favoriteLibrarian.name = 'Anna';
+// favoriteLibrarian.assistCustomer('Boris', 'Learn Typescript');
+
+// const b: number | string = 'Abc';
+// (<string>b).toUpperCase(); /* тип переменной сужается за счет (<string>  ), без этого может ругаться редактор*/
+// (b as string).toUpperCase(); /* другой вариант сужения типа*/
+
+// Task 05.05. Intersection and Union Types
+
+type PersonBook = Person & Book;
+
+const personBook: PersonBook = {
+    name: 'Anna',
+    author: 'Anna',
+    available: false,
+    category: Category.Angular,
+    email: 'anna@mail.com',
+    id: 1,
+    title: 'unknown'
+};
+
+type BookOrUndefined = Book | undefined;
+
+interface TOptions {
+    duration?: number;
+    speed?: number;
+}
+
+function setDefaultConfig (options: TOptions) {
+    options.duration ??= 100;
+    options.speed ??= 60;
+
+    return options;
+}
