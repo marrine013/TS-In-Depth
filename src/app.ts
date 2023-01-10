@@ -1,8 +1,8 @@
-import { ReferenceItem, UL, RefBook, Library } from './classes';
+import { ReferenceItem, UL, RefBook, Library, Shelf } from './classes';
 import { Category } from './enums';
-import { printRefBook, createCustomerID, getAllBooks } from './functions';
-import { Book, Librarian, Logger } from './interfaces';
-import { PersonBook } from './types';
+import { purge, printRefBook, createCustomerID, getAllBooks, getObjectProperty, createCustomer } from './functions';
+import { Book, Librarian, Logger, Magazine } from './interfaces';
+import { BookRequiredFields, PersonBook, UpdatedBook, СreateCustomerFunctionType } from './types';
 
 function showHello(divName: string, name: string) {
     const elt = document.getElementById(divName);
@@ -220,3 +220,60 @@ console.log(ref.getID()); */
 // console.log(library);
 
 // let lib: Library = new Library();
+
+// Task 7.01
+
+let inventory: Book[] = [
+    { id: 10, title: 'The C Programming Language', author: 'K & R', available: true, category: Category.Software },
+    { id: 11, title: 'Code Complete', author: 'Steve McConnell', available: true, category: Category.Software },
+    { id: 12, title: '8-Bit Graphics with Cobol', author: 'A. B.', available: true, category: Category.Software },
+    { id: 13, title: 'Cool autoexec.bat Scripts!', author: 'C. D.', available: true, category: Category.Software },
+];
+
+// console.log(purge(inventory));
+// console.log(purge([1, 2, 3, 4, 5]));
+
+// Task 07.02
+
+// // const bookShelf: Shelf<Book> = new Shelf<Book>(); /* 1st variant*/
+// const bookShelf = new Shelf<Book>(); /* 2st variant*/
+// inventory.forEach(book => bookShelf.add(book));
+// console.log(bookShelf.getFirst().title);
+
+const magazines: Magazine[] = [
+    { title: 'Programming Language Monthly', publisher: 'Code Mags' },
+    { title: 'Literary Fiction Quarterly', publisher: 'College Press' },
+    { title: 'Five Points', publisher: 'GSU' },
+];
+
+const magazineShelf = new Shelf<Magazine>();
+magazines.forEach(magazin => magazineShelf.add(magazin));
+console.log(magazineShelf.getFirst());
+
+// Task 7.03
+
+magazineShelf.printTitles();
+console.log(magazineShelf.find('Five Points'));
+
+console.log(getObjectProperty(magazines[0], 'title'));
+console.log(getObjectProperty<Book, 'author' | 'title'>(inventory[1], 'title'));
+
+// Task 7.04
+
+const bookRequiredFields: BookRequiredFields = {
+    id: 5,
+    author: 'Anna',
+    available: false,
+    category: Category.Angular,
+    markDamaged: null,
+    pages: 165,
+    title: 'Hello, Angular!',
+};
+
+const updatedBook: UpdatedBook = {
+    title: 'Hello, World!',
+};
+
+let params: Parameters<СreateCustomerFunctionType>; // type Tuple
+params = ['Anna', 30, 'Kyiv'];
+createCustomer(...params);
