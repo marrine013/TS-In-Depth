@@ -1,6 +1,17 @@
 import { ReferenceItem, UL, RefBook, Library, Shelf } from './classes';
 import { Category } from './enums';
-import { purge, printRefBook, createCustomerID, getAllBooks, getObjectProperty, createCustomer } from './functions';
+import {
+    purge,
+    printRefBook,
+    createCustomerID,
+    getAllBooks,
+    getObjectProperty,
+    createCustomer,
+    getBooksByCategory,
+    logCategorySearch,
+    getBooksByCategoryPromise,
+    logSearchResults,
+} from './functions';
 import { Book, Librarian, Logger, Magazine } from './interfaces';
 import { BookRequiredFields, PersonBook, UpdatedBook, СreateCustomerFunctionType } from './types';
 
@@ -309,7 +320,34 @@ console.log(ref.getID()); */
 // console.log(favoriteLibrarian);
 
 // Task 8.7
-const refBook: RefBook = new RefBook(1, 'Learn Typescript', 2022, 2);
-refBook.copies = 10; // тут вызывается setter
-// refBook.copies = -10;
-console.log(refBook.copies); // тут вызывается getter
+// const refBook: RefBook = new RefBook(1, 'Learn Typescript', 2022, 2);
+// refBook.copies = 10; // тут вызывается setter
+// // refBook.copies = -10;
+// console.log(refBook.copies); // тут вызывается getter
+
+// // Task 9.1
+// console.log('Begin');
+// getBooksByCategory(Category.Javascript, logCategorySearch);
+// getBooksByCategory(Category.Software, logCategorySearch);
+// console.log('End');
+
+// Task 9.2
+// console.log('Begin');
+// getBooksByCategoryPromise(Category.Javascript)
+//     .then(titles => {
+//         console.log(titles);
+//         // return titles.length; /* возврашаем, чтобы передать в следующий then*/
+//         return Promise.resolve(titles.length); /* асинхронный вариант*/
+//     })
+//     .then(n => console.log(n)) /* принимает на вход то, что вернули в предыдущем then */
+//     .catch(reason => console.log(reason));
+// getBooksByCategoryPromise(Category.Software)
+//     .then(titles => console.log(titles))
+//     .catch(reason => console.log(reason));
+// console.log('End');
+
+// Task 9.3
+// console.log('Begin');
+// logSearchResults(Category.Javascript);
+// logSearchResults(Category.Software).catch(err => console.log(err));
+// console.log('End');
